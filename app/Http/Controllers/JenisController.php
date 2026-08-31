@@ -34,6 +34,8 @@ class JenisController extends Controller
 
         $data = $request->only("nama");
         $data["user_id"] = auth()->id();
+        $data["kode_jenis"] = "JNS-" . strtoupper(uniqid());
+        $data["nama_jenis"] = $request->nama;
 
         if ($request->hasFile("foto")) {
             $data["foto"] = $request->file("foto")->store("jenis", "public");
@@ -57,6 +59,7 @@ class JenisController extends Controller
         ]);
 
         $data = $request->only("nama");
+        $data["nama_jenis"] = $request->nama;
 
         if ($request->hasFile("foto")) {
             $data["foto"] = $request->file("foto")->store("jenis", "public");
@@ -73,4 +76,4 @@ class JenisController extends Controller
 
         return redirect()->route("jenis.index")->with("success", "Jenis berhasil dihapus.");
     }
-};
+}

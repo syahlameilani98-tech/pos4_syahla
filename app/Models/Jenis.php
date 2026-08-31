@@ -19,8 +19,10 @@ class Jenis extends Model
      */
     protected $fillable = [
         'nama',
+        'nama_jenis',
         'foto',
         'user_id',
+        'kode_jenis',
     ];
 
     /**
