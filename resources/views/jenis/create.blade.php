@@ -1,4 +1,3 @@
-
 @extends("layouts.app")
 
 @section("title", "jenis")
@@ -18,7 +17,11 @@
     </div>
     <div class="mb-3">
         <label for="nama" class="form-label">Nama Jenis</label>
-        <input type="text" name="nama" id="nama" class="form-control @error("nama") is-invalid @enderror" value="{{ old("nama") }}">
+        <select name="nama" id="nama" class="form-select @error("nama") is-invalid @enderror">
+            <option value="" disabled {{ old("nama") ? "" : "selected" }}>-- Pilih Jenis --</option>
+            <option value="Makanan" {{ old("nama") == "Makanan" ? "selected" : "" }}>Makanan</option>
+            <option value="Minuman" {{ old("nama") == "Minuman" ? "selected" : "" }}>Minuman</option>
+        </select>
         @error("nama")
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
