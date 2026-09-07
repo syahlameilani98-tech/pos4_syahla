@@ -62,8 +62,9 @@ class PenjualanController extends Controller
         ->get();
 
         $mode = 'create';
+        $grandTotal = $sale->itemPenjualan->sum('subtotal');
 
-        return view('penjualan.pos', compact('sale', 'produks', 'mode') + ['products' => $produks]);
+        return view('penjualan.pos', compact('sale', 'produks', 'mode', 'grandTotal') + ['products' => $produks]);
     }
 
     /**
@@ -79,7 +80,7 @@ class PenjualanController extends Controller
         $produk = Produk::findOrFail($request->produk_id);
 
         if ($produk->stok < $request->qty) {
-            return back()->with('errors', 'Stok produk tidak mencukupi.');
+            return back()->with('error', 'Stok produk tidak mencukupi.');
         }
 
         $sale = Penjualan::firstOrCreate(
@@ -128,7 +129,7 @@ class PenjualanController extends Controller
         $item = ItemPenjualan::find($id);
 
         if (!$item) {
-            return back()->with('errors', 'Item sudah tidak ada di keranjang.');
+            return back()->with('error', 'Item sudah tidak ada di keranjang.');
         }
 
         DB::transaction(function () use ($item) {
@@ -186,8 +187,9 @@ class PenjualanController extends Controller
 
         $produks = Produk::latest()->get();
         $mode = 'edit';
+        $grandTotal = $sale->itemPenjualan->sum('subtotal');
 
-        return view('penjualan.pos', compact('sale', 'produks', 'mode') + ['products' => $produks]);
+        return view('penjualan.pos', compact('sale', 'produks', 'mode', 'grandTotal') + ['products' => $produks]);
     }
 
     /**
@@ -196,19 +198,26 @@ class PenjualanController extends Controller
     public function update(Request $request, Penjualan $penjualan)
     {
         $request->validate([
-            'payment_method' => 'required|in:CASH,QRIS'
+            'payment_method' => 'required|in:CASH,QRIS',
+            'uang_masuk'     => 'required|numeric|min:0',
         ]);
 
         if ($penjualan->itemPenjualan()->count() === 0) {
-            return back()->with('errors', 'Keranjang transaksi masih kosong.');
+            return back()->with('error', 'Keranjang transaksi masih kosong.');
         }
 
-        DB::transaction(function () use ($penjualan, $request) {
-            $total = $penjualan->itemPenjualan()->sum('subtotal');
+        $total = $penjualan->itemPenjualan()->sum('subtotal');
 
+        if ($request->uang_masuk < $total) {
+            return back()->with('error', 'Uang masuk tidak boleh kurang dari total pembayaran.');
+        }
+
+        DB::transaction(function () use ($penjualan, $request, $total) {
             $penjualan->update([
                 'metode_pembayaran' => $request->payment_method,
                 'total_pembayaran'  => $total,
+                'uang_masuk'        => $request->uang_masuk,
+                'kembalian'         => $request->uang_masuk - $total,
                 'status'            => 'COMPLETED'
             ]);
         });

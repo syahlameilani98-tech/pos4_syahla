@@ -24,6 +24,22 @@
 </div>
 
 <div>
+    <label>Nama Jenis</label><br>
+    <select name="jenis_id"
+            class="form-select @error('jenis_id') is-invalid @enderror">
+        <option value="" disabled {{ old('jenis_id', $produk->jenis_id ?? '') ? '' : 'selected' }}>-- Pilih Jenis --</option>
+        @foreach ($jenis as $item)
+            <option value="{{ $item->id }}" {{ old('jenis_id', $produk->jenis_id ?? '') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+        @endforeach
+    </select>
+    @error('jenis_id')
+    <div class="invalid-feedback d-block">
+        {{ $message }}
+    </div>
+    @enderror
+</div>
+
+<div>
     <label>Nama produk</label><br>
     <input type="text" name="name"
             class="form-control @error('name') is-invalid @enderror"
@@ -76,10 +92,10 @@
 <script>
     function previewImage(input) {
         const preview = document.getElementById('preview');
-        const file = input.failes[0];
+        const file = input.files[0];
 
-        if (failes) {
-            preview.src = URL.createObjectURL(failes);
+        if (file) {
+            preview.src = URL.createObjectURL(file);
             preview.style.display ="block";
         }
     }

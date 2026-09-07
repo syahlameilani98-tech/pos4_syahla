@@ -29,17 +29,33 @@
 @endcan
 
 <form action="{{ route('produk.index') }}" method="GET" class="mb-3">
-    <div class="input-group">
-        <input
-            type="text"
-            name="search"
-            value="{{ request('search') }}"
-            class="form-control"
-            placeholder="Search nama produk"
-        >
-        <button class="btn btn-outline-secondary" type="submit">
-            Search
-        </button>
+    <div class="row g-2">
+        <div class="col-md-5">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                class="form-control"
+                placeholder="Search nama produk"
+            >
+        </div>
+
+        <div class="col-md-3">
+            <select name="jenis_id" class="form-select" onchange="this.form.submit()">
+                <option value="">Semua Kategori</option>
+                @foreach ($jenis as $j)
+                    <option value="{{ $j->id }}" {{ request('jenis_id') == $j->id ? 'selected' : '' }}>
+                        {{ $j->nama }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-outline-secondary w-100" type="submit">
+                Search
+            </button>
+        </div>
     </div>
 </form>
 
@@ -50,6 +66,7 @@
         <th scope="col">User</th>
         <th scope="col">Foto</th>
         <th scope="col">Nama</th>
+        <th scope="col">Kategori</th>
         <th scope="col">Harga Beli</th>
         <th scope="col">Harga Jual</th>
         <th scope="col">Stok</th>
@@ -72,7 +89,9 @@
             @endif
         </td>
 
-        <td>{{ $product->nama }}</td>
+        <td>{{ $product->name }}</td>
+
+        <td>{{ $product->jenis->nama ?? '-' }}</td>
 
         <td>Rp{{ number_format($product->harga_beli, 0, ',', '.') }}</td>
 
@@ -107,7 +126,7 @@
     @empty
 
     <tr>
-        <td colspan="8" class="text-center py-4">
+        <td colspan="9" class="text-center py-4">
             <h5 class="text-muted">Data tidak tersedia.</h5>
         </td>
     </tr>

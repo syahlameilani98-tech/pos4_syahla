@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use App\Models\Jenis;
 use App\Models\ItemPenjualan;
 
 class Produk extends Model
@@ -15,6 +16,7 @@ class Produk extends Model
 
     protected $fillable = [
         'user_id',
+        'jenis_id',
         'name',
         'harga_beli',
         'harga_jual',
@@ -25,6 +27,11 @@ class Produk extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class, 'jenis_id');
     }
 
     public function itemPenjualan()

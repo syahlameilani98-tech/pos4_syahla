@@ -23,49 +23,41 @@
     </div>
 </form>
 
-<table class="table align-middle">
-<thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">User</th>
-        <th scope="col">Foto</th>
-        <th scope="col">Nama</th>
-        <th scope="col">Aksi</th>
-    </tr>
-</thead>
-<tbody>
-    @forelse ($jenis as $item)
-    <tr>
-        <th scope="row">{{ $loop->iteration }}</th>
-        <td>{{ $item->user->name ?? "-" }}</td>
-        <td>
-            @if ($item->foto)
-                <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama }}" width="60">
-            @else
-                -
-            @endif
-        </td>
-        <td>{{ $item->nama }}</td>
-        <td>
-            <div class="d-flex gap-1 align-items-center">
-                <a href="{{ route("jenis.edit", $item) }}" class="btn btn-warning btn-sm">Edit</a>
-                <form action="{{ route("jenis.destroy", $item) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method("DELETE")
-                    <button class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus jenis ini?')">Hapus</button>
-                </form>
-            </div>
-        </td>
-    </tr>
-    @empty
-    <tr>
-        <td colspan="5" class="text-center py-4">
-            <h5 class="text-muted">Data tidak tersedia.</h5>
-        </td>
-    </tr>
-    @endforelse
-</tbody>
-</table>
+<div class="border rounded">
+    <table class="table align-middle mb-0">
+    <thead>
+        <tr>
+            <th scope="col" class="px-4">#</th>
+            <th scope="col" class="px-4">Nama</th>
+            <th scope="col" class="px-4 text-end">Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($jenis as $item)
+        <tr>
+            <th scope="row" class="px-4">{{ $loop->iteration }}</th>
+            <td class="px-4">{{ $item->nama }}</td>
+            <td class="px-4 text-end">
+                <div class="d-flex gap-1 justify-content-end">
+                    <a href="{{ route("jenis.edit", $item) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="{{ route("jenis.destroy", $item) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method("DELETE")
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus jenis ini?')">Hapus</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="3" class="text-center py-4">
+                <h5 class="text-muted">Data tidak tersedia.</h5>
+            </td>
+        </tr>
+        @endforelse
+    </tbody>
+    </table>
+</div>
 
 <div class="mt-3">
     {{ $jenis->links() }}

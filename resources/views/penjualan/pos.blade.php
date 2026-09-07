@@ -12,9 +12,9 @@
         </div>
     @endif
 
-    @if(session('errors'))
+    @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('errors') }}
+            {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
@@ -34,10 +34,10 @@
                         <form action="{{ route('penjualan.add-to-cart') }}" method="POST" class="mb-2">
                             @csrf
                             <input type="hidden" name="produk_id" value="{{ $product->id }}">
-                            
+
                             <div class="card p-2 border rounded shadow-sm d-flex flex-row align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2" style="width: 55%;">
-                                    <img src="{{ $product->foto ? asset('storage/'.$product->foto) : 'https://via.placeholder.com/50' }}" 
+                                    <img src="{{ $product->foto ? asset('storage/'.$product->foto) : 'https://via.placeholder.com/50' }}"
                                          alt="Gambar" class="rounded" style="width: 45px; height: 45px; object-fit: cover;">
                                     <div>
                                         <h6 class="mb-0 text-primary fw-semibold" style="font-size: 0.95rem;">
@@ -55,9 +55,9 @@
 
                                 <div class="d-flex align-items-center gap-2" style="width: 40%;">
                                     @if($product->stok > 0)
-                                        <input type="number" name="qty" value="1" min="1" max="{{ $product->stok }}" 
+                                        <input type="number" name="qty" value="1" min="1" max="{{ $product->stok }}"
                                                class="form-control form-control-sm text-center" style="width: 65px;">
-                                        
+
                                         <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold flex-grow-1">
                                             +
                                         </button>
@@ -91,14 +91,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $grandTotal = 0; @endphp
                             @forelse($sale->itemPenjualan as $item)
-                                @php $grandTotal += $item->subtotal; @endphp
                                 <tr>
                                     <td class="fw-semibold text-break" style="max-width: 130px;">
                                         {{ $item->produk->nama ?? $item->produk->nama_produk }}
                                     </td>
-                                    {{-- Menggunakan $item->harga_satuan bukan $item->harga --}}
                                     <td>Rp.{{ number_format($item->harga_satuan ?? 0, 0, ',', '.') }}</td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm text-center p-1" value="{{ $item->kuantitas }}" readonly style="background-color: #f8f9fa;">
@@ -129,7 +126,27 @@
                     @method('PUT')
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Total</span>
                         <span class="fw-bold fs-5 text-dark">Rp.{{ number_format($grandTotal, 0, ',', '.') }}</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-muted mb-1">Uang Masuk</label>
+                        <input type="number"
+                               name="uang_masuk"
+                               id="uang_masuk"
+                               class="form-control @error('uang_masuk') is-invalid @enderror"
+                               placeholder="Masukkan jumlah uang diterima"
+                               min="0"
+                               required>
+                        @error('uang_masuk')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Kembalian</span>
+                        <span id="kembalian_display" class="fw-bold fs-6 text-success">Rp.0</span>
                     </div>
 
                     <div class="mb-3">
@@ -139,7 +156,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100 fw-bold py-2 mb-2" 
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2 mb-2"
                             {{ $sale->itemPenjualan->count() == 0 ? 'disabled' : '' }}>
                         Checkout
                     </button>
@@ -159,4 +176,23 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const grandTotal = {{ $grandTotal }};
+        const uangMasukInput = document.getElementById('uang_masuk');
+        const kembalianDisplay = document.getElementById('kembalian_display');
+
+        if (uangMasukInput) {
+            uangMasukInput.addEventListener('input', function () {
+                const uangMasuk = parseFloat(this.value) || 0;
+                const kembalian = uangMasuk - grandTotal;
+
+                kembalianDisplay.textContent = 'Rp.' + kembalian.toLocaleString('id-ID');
+                kembalianDisplay.classList.toggle('text-danger', kembalian < 0);
+                kembalianDisplay.classList.toggle('text-success', kembalian >= 0);
+            });
+        }
+    })();
+</script>
 @endsection

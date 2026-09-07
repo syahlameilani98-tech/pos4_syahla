@@ -6,6 +6,7 @@ use App\Http\Requests\SearchRequest;
 use App\Http\Requests\Produk\StoreRequest;
 use App\Http\Requests\Produk\UpdateRequest;
 use App\Models\Produk;
+use App\Models\Jenis;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,18 +20,24 @@ class ProdukController extends Controller
         $this->authorize('viewAny', Produk::class);
 
         $keyword = $request->input('search');
+        $jenisId = $request->input('jenis_id');
 
-        $products = Produk::with('user')
+        $products = Produk::with(['user', 'jenis'])
             ->when($keyword, function ($query) use ($keyword) {
                 return $query->where('name', 'like', '%' . $keyword . '%')
                              ->orderBy('name');
             }, function ($query) {
                 return $query->latest();
             })
+            ->when($jenisId, function ($query) use ($jenisId) {
+                return $query->where('jenis_id', $jenisId);
+            })
             ->paginate(10)
             ->withQueryString();
 
-        return view('produk.index', compact('products'));
+        $jenis = Jenis::all();
+
+        return view('produk.index', compact('products', 'jenis'));
     }
 
     /**
@@ -40,7 +47,9 @@ class ProdukController extends Controller
     {
         $this->authorize('create', Produk::class);
 
-        return view('produk.create');
+        $jenis = Jenis::all();
+
+        return view('produk.create', compact('jenis'));
     }
 
     /**
@@ -54,6 +63,7 @@ class ProdukController extends Controller
 
         $data = [
             'user_id'    => Auth::id(),
+            'jenis_id'   => $dataReq['jenis_id'],
             'name'       => $dataReq['name'],
             'harga_beli' => $dataReq['purchase_price'],
             'harga_jual' => $dataReq['selling_price'],
@@ -86,7 +96,9 @@ class ProdukController extends Controller
     {
         $this->authorize('update', $produk);
 
-        return view('produk.edit', compact('produk'));
+        $jenis = Jenis::all();
+
+        return view('produk.edit', compact('produk', 'jenis'));
     }
 
     /**
@@ -100,6 +112,7 @@ class ProdukController extends Controller
 
         $data = [
             'user_id'    => Auth::id(),
+            'jenis_id'   => $dataReq['jenis_id'],
             'name'       => $dataReq['name'],
             'harga_beli' => $dataReq['purchase_price'],
             'harga_jual' => $dataReq['selling_price'],
