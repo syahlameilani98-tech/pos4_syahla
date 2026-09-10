@@ -11,7 +11,7 @@ class JenisController extends Controller
     {
         $jenis = Jenis::query()
             ->when($request->search, function ($query, $search) {
-                $query->where("nama", "like", "%{$search}%");
+                $query->where("nama_jenis", "like", "%{$search}%");
             })
             ->latest()
             ->paginate(10)
@@ -29,17 +29,12 @@ class JenisController extends Controller
     {
         $request->validate([
             "nama" => "required|string|max:255",
-            "foto" => "nullable|image|max:2048",
         ]);
 
-        $data = $request->only("nama");
+        $data = [];
         $data["user_id"] = auth()->id();
         $data["kode_jenis"] = "JNS-" . strtoupper(uniqid());
         $data["nama_jenis"] = $request->nama;
-
-        if ($request->hasFile("foto")) {
-            $data["foto"] = $request->file("foto")->store("jenis", "public");
-        }
 
         Jenis::create($data);
 
@@ -55,15 +50,10 @@ class JenisController extends Controller
     {
         $request->validate([
             "nama" => "required|string|max:255",
-            "foto" => "nullable|image|max:2048",
         ]);
 
-        $data = $request->only("nama");
+        $data = [];
         $data["nama_jenis"] = $request->nama;
-
-        if ($request->hasFile("foto")) {
-            $data["foto"] = $request->file("foto")->store("jenis", "public");
-        }
 
         $jenis->update($data);
 

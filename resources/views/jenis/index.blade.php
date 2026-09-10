@@ -1,4 +1,3 @@
-
 @extends("layouts.app")
 
 @section("title", "jenis")
@@ -36,7 +35,7 @@
         @forelse ($jenis as $item)
         <tr>
             <th scope="row" class="px-4">{{ $loop->iteration }}</th>
-            <td class="px-4">{{ $item->nama }}</td>
+            <td class="px-4">{{ $item->nama_jenis }}</td>
             <td class="px-4 text-end">
                 <div class="d-flex gap-1 justify-content-end">
                     <a href="{{ route("jenis.edit", $item) }}" class="btn btn-warning btn-sm">Edit</a>

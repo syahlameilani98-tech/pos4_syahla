@@ -13,10 +13,26 @@
                 @csrf
                 @method('PUT')
 
+                {{-- Nama Jenis --}}
+                <div class="mb-3">
+                    <label class="form-label">Nama Jenis</label>
+                    <select name="jenis_id" class="form-select @error('jenis_id') is-invalid @enderror">
+                        <option value="" disabled>-- Pilih Jenis --</option>
+                        @foreach ($jenis as $item)
+                            <option value="{{ $item->id }}" {{ old('jenis_id', $produk->jenis_id) == $item->id ? 'selected' : '' }}>
+                                {{ $item->nama_jenis }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('jenis_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 {{-- Nama Produk --}}
                 <div class="mb-3">
                     <label class="form-label">Nama Produk</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $produk->nama) }}" required>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $produk->name) }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -67,8 +83,3 @@
                     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                     <a href="{{ route('produk.index') }}" class="btn btn-secondary">Batal</a>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endsection

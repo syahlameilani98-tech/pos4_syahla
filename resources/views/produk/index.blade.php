@@ -45,7 +45,7 @@
                 <option value="">Semua Kategori</option>
                 @foreach ($jenis as $j)
                     <option value="{{ $j->id }}" {{ request('jenis_id') == $j->id ? 'selected' : '' }}>
-                        {{ $j->nama }}
+                        {{ $j->nama_jenis }}
                     </option>
                 @endforeach
             </select>
@@ -91,7 +91,7 @@
 
         <td>{{ $product->name }}</td>
 
-        <td>{{ $product->jenis->nama ?? '-' }}</td>
+        <td>{{ $product->jenis->nama_jenis ?? '-' }}</td>
 
         <td>Rp{{ number_format($product->harga_beli, 0, ',', '.') }}</td>
 

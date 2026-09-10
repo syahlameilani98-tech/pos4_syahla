@@ -2,7 +2,7 @@
 
 @if (!empty($produk->foto))
     <div class="mb-2">
-        <label>Foto Saat Ini</lable><br>
+        <label>Foto Saat Ini</label><br>
         <img src="{{ asset('storage/' . $produk->foto) }}"
              width="150"
              class="img-thumbnail">
@@ -29,7 +29,7 @@
             class="form-select @error('jenis_id') is-invalid @enderror">
         <option value="" disabled {{ old('jenis_id', $produk->jenis_id ?? '') ? '' : 'selected' }}>-- Pilih Jenis --</option>
         @foreach ($jenis as $item)
-            <option value="{{ $item->id }}" {{ old('jenis_id', $produk->jenis_id ?? '') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+            <option value="{{ $item->id }}" {{ old('jenis_id', $produk->jenis_id ?? '') == $item->id ? 'selected' : '' }}>{{ $item->nama_jenis }}</option>
         @endforeach
     </select>
     @error('jenis_id')

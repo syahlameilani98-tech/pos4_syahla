@@ -20,6 +20,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'jenis_id' => 'required|exists:jenis,id',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'name' => 'required|string|max:255',
             'purchase_price' => 'required|integer|min:0',
@@ -31,6 +32,8 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'jenis_id.required' => 'Jenis wajib dipilih.',
+            'jenis_id.exists' => 'Jenis yang dipilih tidak valid.',
             'foto.image' => 'File yang di upload harus gambar.',
             'foto.mimes' => 'Extensi gambar harus JPG, JPEG, PNG.',
             'foto.max' => 'Maksimal ukuran gambar 2MB.',

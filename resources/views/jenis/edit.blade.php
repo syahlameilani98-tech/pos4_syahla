@@ -1,4 +1,3 @@
-
 @extends("layouts.app")
 
 @section("title", "jenis")
@@ -7,24 +6,12 @@
 
 <h1 class="mb-4">Edit Jenis</h1>
 
-<form action="{{ route("jenis.update", $jenis) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route("jenis.update", $jenis) }}" method="POST">
     @csrf
     @method("PUT")
     <div class="mb-3">
-        <label for="foto" class="form-label">Foto</label>
-        <input type="file" name="foto" id="foto" class="form-control @error("foto") is-invalid @enderror">
-        @error("foto")
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-        @if ($jenis->foto)
-            <div class="mt-2">
-                <img src="{{ asset('storage/' . $jenis->foto) }}" alt="{{ $jenis->nama }}" width="80">
-            </div>
-        @endif
-    </div>
-    <div class="mb-3">
         <label for="nama" class="form-label">Nama Jenis</label>
-        <input type="text" name="nama" id="nama" class="form-control @error("nama") is-invalid @enderror" value="{{ old("nama", $jenis->nama) }}">
+        <input type="text" name="nama" id="nama" class="form-control @error("nama") is-invalid @enderror" value="{{ old("nama", $jenis->nama_jenis) }}">
         @error("nama")
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
