@@ -50,6 +50,14 @@
                     </a>
                 </li>
 
+                <!-- MENU ABOUT TAMBAHAN -->
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('about*') ? 'active fw-bold text-white' : '' }}"
+                       href="{{ route('about') }}">
+                        About
+                    </a>
+                </li>
+
             </ul>
 
             <div class="ms-auto">
