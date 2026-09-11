@@ -2,7 +2,7 @@
     <div class="container">
 
         <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">
-            <i class="bi bi-shop me-2"></i>Point Of Sale
+            <i class="bi bi-shop me-2"></i>Senja Cafe
         </a>
 
         <button class="navbar-toggler" type="button"
